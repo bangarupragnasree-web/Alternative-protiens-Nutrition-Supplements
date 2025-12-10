@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alternative Protein — Single File Site</title>
+  <meta name="description" content="Alternative Protein & Nutritional Supplements — single-file multi-page demo (HTML/CSS/JS) for beginners." />
+  <style>
+    /* ---------------------------
+       Single-file site styles
+       Palette: Mocha (#4B3935) & Vanilla (#F0E7D5)
+       Beginner-friendly, responsive and clean
+       --------------------------- */
+    :root{
+      --mocha: #4B3935;
+      --vanilla: #F0E7D5;
+      --card: #ffffff;
+      --accent: #2b8aef;
+      --muted: #556070;
+      --radius: 12px;
+      --shadow: 0 12px 30px rgba(75,57,53,0.06);
+      --container: 1000px;
+    }
+
+    * { box-sizing: border-box; }
+    html,body { height: 100%; margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+    body{
+      background: linear-gradient(135deg,var(--vanilla), #fff);
+      color: var(--mocha);
+      padding: 18px;
+    }
+
+    .site{
+      max-width: var(--container);
+      margin: 0 auto;
+      background: transparent;
+    }
+
+    /* Header / Nav */
+    header.site-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:52px;height:52px;border-radius:10px;background:var(--mocha);color:var(--vanilla);
+      display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;box-shadow:0 8px 18px rgba(75,57,53,0.08)
+    }
+    .brand .title{font-weight:800}
+    nav.main-nav{display:flex;gap:8px;align-items:center}
+    nav.main-nav button{
+      background:transparent;border:0;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer;color:var(--mocha)
+    }
+    nav.main-nav button.active,
+    nav.main-nav button:hover{background:var(--vanilla)}
+
+    /* Controls */
+    .controls{display:flex;gap:8px;align-items:center}
+    .search{padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);min-width:180px}
+    .theme-btn{padding:8px 10px;border-radius:10px;border:0;background:transparent;cursor:pointer;font-weight:700}
+
+    /* Section "pages" */
+    main.pages{min-height:60vh}
+    section.page{display:none;padding:12px 0}
+    section.page.active{display:block}
+
+    .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px}
+
+    /* Hero */
+    .hero h1{margin:0 0 8px}
+    .lead{color:var(--muted); margin:0 0 12px}
+
+    /* Quick grid */
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width:880px){ .grid-3{grid-template-columns:1fr} }
+
+    /* Products */
+    .product-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+    .chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:transparent;color:var(--muted);font-weight:700}
+    .chip.active{background:linear-gradient(90deg,#34d399,var(--accent));color:#fff;border:0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .product{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.03);cursor:pointer;transition:transform .12s ease}
+    .product:hover{transform:translateY(-6px)}
+    .product .title{font-weight:800}
+
+    /* Estimator, forms */
+    .form-row{display:flex;gap:8px;flex-wrap:wrap}
+    input,textarea,select{padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);min-width:120px}
+    .est-result{margin-top:10px;padding:10px;border-radius:8px;background:linear-gradient(180deg,rgba(43,138,239,0.04),transparent);color:var(--muted)}
+
+    /* FAQ */
+    .faq .q{display:block;width:100%;text-align:left;padding:10px 0;border:0;background:transparent;font-weight:800;cursor:pointer}
+    .faq .a{padding:6px 0;color:var(--muted)}
+
+    /* Modal */
+    .modal-bg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:60;padding:16px}
+    .modal{background:var(--card);padding:16px;border-radius:12px;max-width:720px;width:100%;box-shadow:0 30px 60px rgba(2,6,23,0.45)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center}
+
+    /* Footer */
+    footer.site-footer{text-align:center;color:var(--muted);margin-top:18px;padding-top:8px;border-top:1px dashed rgba(0,0,0,0.04)}
+
+    /* small screens */
+    @media (max-width:700px){
+      header.site-header{flex-direction:column;align-items:flex-start;gap:12px}
+      .controls{width:100%;justify-content:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="site-header">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">AP</div>
+        <div>
+          <div class="title">Alternative Protein</div>
+          <div class="subtitle" style="font-size:13px;color:var(--muted)">Agriculture & Cooperation Dept • PID001</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <nav class="main-nav" aria-label="Main navigation">
+          <button data-page="home" class="nav-btn active">Home</button>
+          <button data-page="about" class="nav-btn">About</button>
+          <button data-page="modalities" class="nav-btn">Modalities</button>
+          <button data-page="products" class="nav-btn">Products</button>
+          <button data-page="contact" class="nav-btn">Contact</button>
+        </nav>
+
+        <div class="controls">
+          <input id="globalSearch" class="search" placeholder="Search products (pea, bars)"/>
+          <button id="themeToggle" class="theme-btn">Theme</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="pages">
+      <!-- Home -->
+      <section id="home" class="page active" aria-labelledby="homeTitle">
+        <div class="card hero">
+          <h1 id="homeTitle">Alternative Protein & Nutritional Supplements</h1>
+          <p class="lead">Safe • Sustainable • Scalable — Plant-based, Fermentation-derived, and Cultivated alternatives to animal proteins.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button data-page="modalities" class="chip">Explore Modalities</button>
+            <button data-page="products" class="chip">View Products</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Challenge summary</h2>
+          <p>Protein — Meat alternatives are focused on delivering the same cultural and sensory experiences to animal-derived foods so that consumers and producers have alternatives that don't feel like a big sacrifice. Alt-protein can be produced using Plant-based, Fermentation-derived, and Cultivated approaches.</p>
+        </div>
+
+        <div class="card grid-3">
+          <div>
+            <h3>Why it matters</h3>
+            <p class="muted">Meat & dairy use ~83% of farmland and produce ~60% of agricultural greenhouse gases. Alternatives reduce footprint and improve food safety.</p>
+          </div>
+          <div>
+            <h3>Users</h3>
+            <p class="muted">Consumers, FMCG companies, Fast food restaurant chains</p>
+          </div>
+          <div>
+            <h3>Impact</h3>
+            <p class="muted">Farmers get better prices for their yield and there is positive effect on climate & community health.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="page" aria-labelledby="aboutTitle">
+        <div class="card">
+          <h1 id="aboutTitle">About the Challenge</h1>
+          <h3>Context</h3>
+          <p>Alternative proteins aim to match cultural and sensory experiences of animal-derived foods so switching is easier for consumers and producers. Modalities include Plant-based, Fermentation-derived, and Cultivated (cell-based).</p>
+
+          <h3>Expected outcomes</h3>
+          <ul>
+            <li>New food products and formulations</li>
+            <li>RTE & RTC product lines</li>
+            <li>Bulk raw materials for food industry use</li>
+          </ul>
+
+          <h3>Why this helps</h3>
+          <p class="muted">Reduces land and greenhouse gas pressure, reduces risk of contamination from animal products, and supports low-to-middle-income communities by improving food safety and availability.</p>
+        </div>
+      </section>
+
+      <!-- Modalities -->
+      <section id="modalities" class="page" aria-labelledby="modalitiesTitle">
+        <div class="card">
+          <h1 id="modalitiesTitle">Production Modalities</h1>
+          <p class="muted">Alt-protein products can be produced by one or a combination of these approaches:</p>
+
+          <div class="accordion" style="margin-top:12px">
+            <button class="acc-btn" aria-expanded="false">Plant-based</button>
+            <div class="acc-panel" hidden>
+              <p>Made from legumes, grains, seeds and oils. Formulated to match texture, taste and nutrition of animal foods.</p>
+            </div>
+
+            <button class="acc-btn" aria-expanded="false">Fermentation-derived</button>
+            <div class="acc-panel" hidden>
+              <p>Microbial fermentation (precision or traditional) to produce proteins and functional ingredients at scale with lower land use.</p>
+            </div>
+
+            <button class="acc-btn" aria-expanded="false">Cultivated (Cell-based)</button>
+            <div class="acc-panel" hidden>
+              <p>Animal cells grown in bioreactors to produce real meat/dairy components without raising whole animals.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Products -->
+      <section id="products" class="page" aria-labelledby="productsTitle">
+        <div class="card">
+          <h1 id="productsTitle">Product Catalog (demo)</h1>
+
+          <div class="product-controls">
+            <input id="prodSearch" class="search" placeholder="Search within products (pea, bars, blend)"/>
+            <div class="filters" role="tablist" aria-label="Product filters">
+              <button class="chip active" data-filter="all">All</button>
+              <button class="chip" data-filter="pea">Pea</button>
+              <button class="chip" data-filter="blend">Blend</button>
+              <button class="chip" data-filter="bars">Bars</button>
+              <button class="chip" data-filter="vitamin">Vitamins</button>
+            </div>
+          </div>
+
+          <div class="grid" id="grid" aria-live="polite">
+            <div class="product" data-id="p1" data-cat="pea"><div class="title">Pea Protein — 1kg</div><div class="muted">20g protein</div></div>
+            <div class="product" data-id="p2" data-cat="blend"><div class="title">Complete Blend — 800g</div><div class="muted">Pea + Rice + Hemp</div></div>
+            <div class="product" data-id="p3" data-cat="bars"><div class="title">Protein Bars — Box</div><div class="muted">12 bars (RTE)</div></div>
+            <div class="product" data-id="p4" data-cat="vitamin"><div class="title">Daily Multivitamin</div><div class="muted">Micronutrient support</div></div>
+            <div class="product" data-id="p5" data-cat="pea"><div class="title">Vanilla Pea — 500g</div><div class="muted">Flavored</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="page" aria-labelledby="contactTitle">
+        <div class="card">
+          <h1 id="contactTitle">Contact & Express Interest</h1>
+          <p class="muted">Share a project idea, partnership or pilot request. The form below is demo-only (client-side).</p>
+
+          <form id="contactForm" class="card" style="display:grid;gap:8px">
+            <input id="c-name" placeholder="Your name" required />
+            <input id="c-email" type="email" placeholder="Email" required />
+            <textarea id="c-message" rows="5" placeholder="Message (project, partnership, pilot)"></textarea>
+
+            <div style="display:flex;gap:8px;align-items:center">
+              <button type="submit" class="chip">Send</button>
+              <button type="reset" class="chip">Clear</button>
+              <div id="contactStatus" style="color:var(--muted);margin-left:8px"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Quick Estimator (demo)</h2>
+          <p class="muted">Estimate approximate CO₂ and land savings for replacing some meat with alternative protein (simplified demo).</p>
+
+          <div class="form-row" style="margin-top:8px;">
+            <input id="meatKg" type="number" step="0.1" value="5" placeholder="meat kg/week" />
+            <input id="replacePct" type="number" step="1" value="50" placeholder="% replace" />
+            <input id="weeks" type="number" step="1" value="52" placeholder="weeks" />
+            <button id="estBtn" class="chip">Estimate</button>
+            <button id="estReset" class="chip">Reset</button>
+          </div>
+
+          <div id="estRes" class="est-result" style="display:none"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- product modal -->
+    <div id="modal" class="modal-bg" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-head">
+          <div>
+            <strong id="mname">Product</strong>
+            <div id="mcat" class="muted" style="font-size:13px;margin-top:4px"></div>
+          </div>
+          <div>
+            <button id="mclose" class="chip">Close</button>
+          </div>
+        </div>
+        <p id="mdesc" class="muted" style="margin-top:12px"></p>
+        <div style="margin-top:12px"><button id="mrequest" class="chip">Request sample</button></div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div>© <span id="year"></span> Agriculture & Cooperation Department — PID001</div>
+      <div style="color:var(--muted);font-size:13px">Built with HTML, CSS and basic JavaScript — beginner friendly</div>
+    </footer>
+  </div>
+
+  <script>
+    // ----------------------------
+    // Single-file site JavaScript
+    // Beginner-friendly comments included
+    // ----------------------------
+
+    // Helper: show a given page (section) and update nav active state + hash
+    function showPage(pageId, push = true) {
+      document.querySelectorAll('.page').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (!target) return;
+      target.classList.add('active');
+
+      // Set active nav button
+      document.querySelectorAll('.main-nav button').forEach(b => {
+        b.classList.toggle('active', b.dataset.page === pageId);
+      });
+
+      // update URL hash (so back button works)
+      if (push) history.pushState({page: pageId}, '', '#' + pageId);
+
+      // small UX: scroll top of main content
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // On page load, wire nav buttons
+    document.querySelectorAll('.nav-btn, .main-nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.dataset.page || btn.getAttribute('data-page');
+        if (page) showPage(page);
+      });
+    });
+
+    // Respect hash on load (so you can link to sections)
+    const initialHash = location.hash.replace('#','');
+    if (initialHash && document.getElementById(initialHash)) {
+      showPage(initialHash, false);
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', (e) => {
+      const page = (location.hash || '#home').replace('#','') || 'home';
+      showPage(page, false);
+    });
+
+    // Theme toggle (light/dark) persisted
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle?.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('site-theme','light');
+      } else {
+        document.documentElement.setAttribute('data-theme','dark');
+        localStorage.setItem('site-theme','dark');
+      }
+    });
+    // apply saved theme
+    if (localStorage.getItem('site-theme') === 'dark') document.documentElement.setAttribute('data-theme','dark');
+
+    // ----------------------------
+    // Products: search, filter chips, modal
+    // ----------------------------
+    const productGrid = document.getElementById('grid');
+    if (productGrid) {
+      const products = Array.from(document.querySelectorAll('.product'));
+      const chips = Array.from(document.querySelectorAll('.filters .chip'));
+      const prodSearch = document.getElementById('prodSearch') || document.getElementById('globalSearch');
+
+      // Apply filters & search
+      function applyProductFilters() {
+        const q = (prodSearch?.value || '').toLowerCase().trim();
+        const active = (document.querySelector('.filters .chip.active') || {}).dataset?.filter || 'all';
+        products.forEach(p => {
+          const title = (p.querySelector('.title')?.textContent || '').toLowerCase();
+          const cat = (p.dataset.cat || '').toLowerCase();
+          const matchesQ = !q || title.includes(q) || cat.includes(q);
+          const matchesFilter = active === 'all' || cat.split(' ').includes(active);
+          p.style.display = (matchesQ && matchesFilter) ? '' : 'none';
+        });
+      }
+
+      // chip clicks
+      chips.forEach(ch => ch.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        ch.classList.add('active');
+        applyProductFilters();
+      }));
+
+      // product search
+      if (prodSearch) prodSearch.addEventListener('input', applyProductFilters);
+
+      // product click -> open modal with demo data
+      const modalBg = document.getElementById('modal');
+      const mname = document.getElementById('mname');
+      const mcat = document.getElementById('mcat');
+      const mdesc = document.getElementById('mdesc');
+      const mclose = document.getElementById('mclose');
+      const mrequest = document.getElementById('mrequest');
+
+      // small demo product details
+      const productData = {
+        p1: { name: 'Pea Protein — 1kg', cat: 'Pea', desc: 'Neutral-flavoured pea protein for shakes and recipes. 20g protein per serving.' },
+        p2: { name: 'Complete Blend — 800g', cat: 'Blend', desc: 'Pea + Rice + Hemp blend for balanced amino acids. 18g protein per serving.' },
+        p3: { name: 'Protein Bars — Box', cat: 'Bars', desc: 'Box of 12 bars: convenient RTE snacks (~200 kcal each).' },
+        p4: { name: 'Daily Multivitamin', cat: 'Vitamins', desc: 'Formulated multivitamin for active lifestyles.' },
+        p5: { name: 'Vanilla Pea — 500g', cat: 'Pea', desc: 'Vanilla-flavoured pea protein for smoothies. 15g protein per serving.' }
+      };
+
+      productGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.product');
+        if (!card) return;
+        const id = card.dataset.id;
+        const info = productData[id];
+        if (!info) return;
+        mname.textContent = info.name;
+        mcat.textContent = info.cat;
+        mdesc.textContent = info.desc;
+        modalBg.style.display = 'flex';
+        modalBg.setAttribute('aria-hidden','false');
+      });
+
+      // close modal
+      mclose.addEventListener('click', () => {
+        modalBg.style.display = 'none';
+        modalBg.setAttribute('aria-hidden','true');
+      });
+      // request button simulates an action
+      mrequest.addEventListener('click', () => {
+        alert('Request recorded (demo). We will contact you.');
+        modalBg.style.display = 'none';
+        modalBg.setAttribute('aria-hidden','true');
+      });
+    }
+
+    // close modal on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modalBg = document.getElementById('modal');
+        if (modalBg && modalBg.style.display === 'flex') {
+          modalBg.style.display = 'none';
+          modalBg.setAttribute('aria-hidden','true');
+        }
+      }
+    });
+
+    // ----------------------------
+    // Modalities: simple accordion
+    // ----------------------------
+    document.querySelectorAll('.acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        const panel = btn.nextElementSibling;
+        if (panel) panel.hidden = expanded;
+      });
+    });
+
+    // ----------------------------
+    // Contact form: client-side validation (demo)
+    // ----------------------------
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // demo: don't submit to server
+        const name = (document.getElementById('c-name')?.value || '').trim();
+        const email = (document.getElementById('c-email')?.value || '').trim();
+        const msg = (document.getElementById('c-message')?.value || '').trim();
+        const status = document.getElementById('contactStatus');
+        if (!name) { status.textContent = 'Please enter your name.'; return; }
+        if (!/\S+@\S+\.\S+/.test(email)) { status.textContent = 'Please enter a valid email.'; return; }
+        status.textContent = 'Sending…';
+        // simulate async submit
+        setTimeout(() => {
+          status.textContent = 'Thanks — your message was recorded (demo).';
+          contactForm.reset();
+        }, 900);
+      });
+    }
+
+    // ----------------------------
+    // Estimator (demo)
+    // ----------------------------
+    const estBtn = document.getElementById('estBtn');
+    const estReset = document.getElementById('estReset');
+    const estRes = document.getElementById('estRes');
+
+    if (estBtn) {
+      estBtn.addEventListener('click', () => {
+        const meat = parseFloat(document.getElementById('meatKg')?.value) || 0;
+        const pct = parseFloat(document.getElementById('replacePct')?.value) || 0;
+        const weeks = parseInt(document.getElementById('weeks')?.value) || 1;
+        const replaced = meat * (pct/100) * weeks;
+        const co2 = Math.round((27-3) * replaced);
+        const land = Math.round((326-20) * replaced);
+        estRes.style.display = 'block';
+        estRes.innerHTML = `Replaced: ${replaced.toFixed(1)} kg — CO₂ avoided: ${co2} kg — Land saved: ${land} m² (demo)`;
+      });
+    }
+    if (estReset) {
+      estReset.addEventListener('click', () => {
+        document.getElementById('meatKg').value = 5;
+        document.getElementById('replacePct').value = 50;
+        document.getElementById('weeks').value = 52;
+        estRes.style.display = 'none';
+      });
+    }
+
+    // ----------------------------
+    // Footer year
+    // ----------------------------
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // ----------------------------
+    // Global search: if user types in global search (header), we jump to products and apply search
+    // ----------------------------
+    const globalSearch = document.getElementById('globalSearch');
+    if (globalSearch) {
+      globalSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          showPage('products');
+          // copy to product search input if present
+          const prodSearch = document.getElementById('prodSearch') || document.getElementById('prodSearch');
+          const localProdSearch = document.getElementById('prodSearch') || document.getElementById('prodSearch');
+          // find product search field
+          const productSearchField = document.getElementById('prodSearch') || document.getElementById('prodSearch') || document.getElementById('prodSearch');
+          // best effort: productControls field id is prodSearch (if present)
+          const pSearch = document.getElementById('prodSearch') || document.querySelector('.product-controls .search') || document.getElementById('prodSearch');
+          if (pSearch) { pSearch.value = globalSearch.value; pSearch.dispatchEvent(new Event('input')); }
+        }
+      });
+    }
+
+    // Initial apply product filters in case UI loaded with default active chip
+    setTimeout(() => {
+      const ev = new Event('input');
+      (document.getElementById('prodSearch') || document.getElementById('globalSearch'))?.dispatchEvent(ev);
+      document.querySelectorAll('.filters .chip').forEach(c => {
+        if (c.classList.contains('active')) c.click?.();
+      });
+    }, 200);
+  </script>
+</body>
+</html>
